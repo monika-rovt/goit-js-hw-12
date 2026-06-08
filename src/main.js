@@ -56,16 +56,23 @@ form.addEventListener('submit', async (event) => {
       position: 'topRight',
     });
     
-
-   if (data.totalHits <= perPage) {
-
-      hideLoadMoreButton();
-iziToast.info({
+if (data.totalHits <= perPage) {
+    // Ховаємо кнопку "Load More"
+    hideLoadMoreButton; 
+    
+    // Виводимо сповіщення про завершення пошуку за допомогою iziToast
+    iziToast.info({
         title: 'Увага',
         message: 'Ви переглянули всі доступні зображення за вашим запитом.',
         position: 'topRight',
         timeout: 4000
     });
+}
+   if (data.totalHits > perPage) {
+
+      showLoadMoreButton();
+
+    }
 
   } catch (error) {
     iziToast.error({
