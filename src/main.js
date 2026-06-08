@@ -57,13 +57,15 @@ form.addEventListener('submit', async (event) => {
     });
     
 
-   if (data.totalHits > perPage) {
+   if (data.totalHits <= perPage) {
 
-      showLoadMoreButton();
-//       iziToast.info({
-//     message: "We're sorry, but you've reached the end of search results."
-//   });
-    }
+      hideLoadMoreButton();
+iziToast.info({
+        title: 'Увага',
+        message: 'Ви переглянули всі доступні зображення за вашим запитом.',
+        position: 'topRight',
+        timeout: 4000
+    });
 
   } catch (error) {
     iziToast.error({
