@@ -6,6 +6,7 @@ import { clearGallery, createGallery, hideLoader, hideLoadMoreButton, showLoader
 
 
 const form = document.querySelector('.form');
+const galleryContainer = document.querySelector('.gallery');
 const searchInput = document.querySelector('.input');
 const loadMoreBtn = document.querySelector('.load-more');
 let page = 1;
@@ -34,7 +35,7 @@ form.addEventListener('submit', async (event) => {
   hideLoadMoreButton();
 
   try {
-    hideLoader();
+    // hideLoader();
 
     const data = await getImagesByQuery(query, page);
     
@@ -49,11 +50,13 @@ form.addEventListener('submit', async (event) => {
     }
     // Успішний результат, малюємо галерею
     createGallery(data.hits);
+
     iziToast.success({
       title: 'Success',
       message: `Ми знайшли ${data.hits.length} зображень!`,
       position: 'topRight',
     });
+
    if (data.totalHits > perPage) {
       showLoadMoreButton();
     }
@@ -73,7 +76,6 @@ form.addEventListener('submit', async (event) => {
 
 loadMoreBtn.addEventListener('click', async () => {
   page += 1; // Збільшуємо сторінку для наступного запиту
-
   // Ховаємо кнопку на час завантаження наступної порції та показуємо індикатор
   hideLoadMoreButton();
   showLoader();
@@ -86,8 +88,8 @@ loadMoreBtn.addEventListener('click', async () => {
     const totalPages = Math.ceil(data.totalHits / perPage);
     
     if (page >= totalPages) {
-      alert("We're sorry, but you've reached the end of search results.");
-      hideLoadMoreButton();
+      iziToast.info({ message: "We're sorry, but you've reached the end of search results." });
+      hideLoadMoreButton(); 
     } else {
       showLoadMoreButton();
     }
@@ -98,11 +100,11 @@ loadMoreBtn.addEventListener('click', async () => {
     hideLoader();
   }
 });
-function scrollToNextGroup() {
-  const firstCard = refs.gallery.firstElementChild;
+async function scrollToNextGroup() {
+  const firstCard = galleryContainer.firstElementChild;
   
   if (firstCard) {
-    const cardHeight = firstCard.getBoundingClientRect().height;
+    const { height: cardHeight } = document.querySelector('.gallery').getBoundingClientRect();
     
     window.scrollBy({
       top: cardHeight * 2,
@@ -110,3 +112,4 @@ function scrollToNextGroup() {
     });
   }
 }
+scrollToNextGroup();

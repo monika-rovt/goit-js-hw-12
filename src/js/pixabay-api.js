@@ -10,7 +10,7 @@ const perPage = 15;
 export async function getImagesByQuery(query, page) {
 if (query !== previousQuery) {
     page = 1;
-    previousQuery = query;
+    // previousQuery = query;
   }
 
   try {
