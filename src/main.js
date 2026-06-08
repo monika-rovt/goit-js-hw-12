@@ -33,10 +33,11 @@ form.addEventListener('submit', async (event) => {
  
   page = 1;
   hideLoadMoreButton();
+  galleryContainer.innerHTML = '';
+  loadMoreBtn.style.display = 'none';
 
   try {
-    // hideLoader();
-
+  
     const data = await getImagesByQuery(query, page);
     
     // Перевірка чи знайдено хоч якісь зображення
@@ -56,9 +57,14 @@ form.addEventListener('submit', async (event) => {
       message: `Ми знайшли ${data.hits.length} зображень!`,
       position: 'topRight',
     });
+    galleryContainer.innerHTML = createGalleryMarkup(data.hits);
 
    if (data.totalHits > perPage) {
+
       showLoadMoreButton();
+      iziToast.info({
+    message: "We're sorry, but you've reached the end of search results."
+  });
     }
 
   } catch (error) {
@@ -83,6 +89,8 @@ loadMoreBtn.addEventListener('click', async () => {
   try {
     const data = await getImagesByQuery(query, page);
     createGallery(data.hits);
+scrollToNextGroup();
+
 
     // Перевіряємо, чи дійшли ми до кінця списку
     const totalPages = Math.ceil(data.totalHits / perPage);
@@ -93,23 +101,26 @@ loadMoreBtn.addEventListener('click', async () => {
     } else {
       showLoadMoreButton();
     }
+    
   } catch (error) {
-    console.error('Помилка завантаження:', error);
+    iziToast.error({ message: 'Сталася помилка під час завантаження. Спробуйте ще раз.' });
+  console.error(error);
   } finally {
     // Ховаємо індикатор після того, як домалювали елементи
     hideLoader();
   }
 });
 async function scrollToNextGroup() {
-  const firstCard = galleryContainer.firstElementChild;
+  const galleryItems = document.querySelectorAll('.gallery a'); // або ваш клас елемента
   
-  if (firstCard) {
-    const { height: cardHeight } = document.querySelector('.gallery').getBoundingClientRect();
+  if (galleryItems.length > 0) {
+    // Отримуємо висоту першого елемента галереї
+    const firstItemHeight = galleryItems[0].getBoundingClientRect().height;
     
+    // Прокручуємо на висоту двох рядів (або одного елемента, залежно від дизайну)
     window.scrollBy({
-      top: cardHeight * 2,
-      behavior: 'smooth',
+      top: firstItemHeight * 2, 
+      behavior: 'smooth'
     });
   }
 }
-scrollToNextGroup();
