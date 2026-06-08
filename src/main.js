@@ -33,9 +33,7 @@ form.addEventListener('submit', async (event) => {
  
   page = 1;
   hideLoadMoreButton();
-  galleryContainer.innerHTML = '';
-  loadMoreBtn.style.display = 'none';
-
+    
   try {
   
     const data = await getImagesByQuery(query, page);
@@ -57,14 +55,14 @@ form.addEventListener('submit', async (event) => {
       message: `Ми знайшли ${data.hits.length} зображень!`,
       position: 'topRight',
     });
-    galleryContainer.innerHTML = createGalleryMarkup(data.hits);
+    
 
    if (data.totalHits > perPage) {
 
       showLoadMoreButton();
-      iziToast.info({
-    message: "We're sorry, but you've reached the end of search results."
-  });
+//       iziToast.info({
+//     message: "We're sorry, but you've reached the end of search results."
+//   });
     }
 
   } catch (error) {
